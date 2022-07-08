@@ -13,7 +13,7 @@ BeatDetect beat;
 PeasyCam cam;
 
 void setup(){
-  size(1920, 1080, P3D);
+  size(800, 800, P3D);
   
   cam = new PeasyCam(this, 500);
   
@@ -27,12 +27,14 @@ void setup(){
 float t = 0;
 
 void draw(){
+  if (t > 255){ t = 0; };
+  
   beat.detect(in.mix);
   
   background(0);
   
-  cam.rotateY(0.10);
-  cam.rotateX(0.05);
+  //cam.rotateY(0.10);
+  //cam.rotateX(0.05);
   
   cam.beginHUD();
   
@@ -45,17 +47,17 @@ void draw(){
   for (float theta = 0; theta <= 2 * PI; theta += 0.1){
     float rad = r(
         theta,  // theta
-        1,      // a
-        1,      // b
-        sin(t) * random(1, 50),      // m
-        1,      // n1
-        sin(t) + in.mix.get(round(theta))* 300,      // n2
-        cos(t) + in.mix.get(round(theta))* 300       // n3
+        1.5,      // a
+        1.5,      // b
+        sin(theta) * random(1, 30),      // m
+        1.5,      // n1
+        in.mix.get(round(theta))* 200,      // n2
+        in.mix.get(round(theta))* 200       // n3
       );
     float x = rad * cos(theta);
     float y = rad * sin(theta);
     
-    fill(255, random(1, 255), random(1, 90));
+    fill(random(t, 255), random(1, 255), random(t, 255));
     //stroke(random(1, 255), random(1, 255), random(1, 255));
     vertex(x, y);
     
