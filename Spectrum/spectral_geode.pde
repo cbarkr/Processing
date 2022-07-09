@@ -13,21 +13,21 @@ BeatDetect beat;
 PeasyCam cam;
 
 void setup(){
-  size(800, 800, P3D);
+  size(1000, 1000, P3D);
   
   cam = new PeasyCam(this, 500);
   
   minim = new Minim(this);
-  in = minim.getLineIn(Minim.STEREO, 1024);
+  in = minim.getLineIn();
   
   beat = new BeatDetect();
-  beat.setSensitivity(400);
+  beat.setSensitivity(500);
 }
 
 float t = 0;
 
 void draw(){
-  if (t > 255){ t = 0; };
+  if (t > 255){ t = 15; };
   
   beat.detect(in.mix);
   
@@ -38,7 +38,10 @@ void draw(){
   
   cam.beginHUD();
   
-  translate(width/2, height/2);
+  int halfWidth = width/2;
+  int halfHeight = height/2;
+  
+  translate(halfWidth, halfHeight);
   //noFill();
   stroke(255);
 
@@ -46,19 +49,31 @@ void draw(){
   
   for (float theta = 0; theta <= 2 * PI; theta += 0.1){
     float rad = r(
-        theta,  // theta
-        1.3,      // a
-        1.3,      // b
-        random(1, 20),      // m
-        0.5,      // n1
-        in.mix.get(round(theta))* 150,      // n2
-        in.mix.get(round(theta))* 150       // n3
+        theta * 1.2,  // theta
+        1.15,      // a
+        1.15,      // b
+        random(1, 150),      // m
+        0.175,      // n1
+        (sin(t) * 45) * in.mix.get(round(theta)),      // n2
+        (sin(t) * 45) * in.mix.get(round(theta))       // n3
       );
     float x = rad * cos(theta);
     float y = rad * sin(theta);
     
-    fill(random(t, 255), random(t, 255), random(t, 255));
-    //stroke(random(1, 255), random(1, 255), random(1, 255));
+    // Limit max size with random number
+    x = (x > halfWidth - 50) ? random(200, (halfWidth - 50)) : x;
+    y = (y > halfWidth - 50) ? random(200, (halfWidth - 50)) : y;
+    x = (x < -(halfWidth - 50)) ? random(-(halfWidth - 50), -200) : x;
+    y = (y < -(halfWidth - 50)) ? random(-(halfWidth - 50), -200) : y;
+    
+    // Hard limit max size
+    //x = (x > halfWidth - 50) ? (halfWidth - 50) : x;
+    //y = (y > halfWidth - 50) ? (halfWidth - 50) : y;
+    //x = (x < -(halfWidth - 50)) ? -(halfWidth - 50) : x;
+    //y = (y < -(halfWidth - 50)) ? -(halfWidth - 50) : y;
+    
+    fill(random(t, 255), random(t, 255), random(155, 255));
+    //stroke(random(t, 255), random(t, 255), random(t, 255));
     vertex(x, y);
     
     endShape();
